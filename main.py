@@ -1,6 +1,5 @@
 import random
 
-from jugador import Jugador
 
 class Jugador:
     def __init__(self, ficha, numero):
