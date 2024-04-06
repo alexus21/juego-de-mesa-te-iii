@@ -2,6 +2,11 @@ import random
 
 from jugador import Jugador
 
+class Jugador:
+    def __init__(self, ficha, numero):
+        self.nombre = "Jugador " + str(numero)
+        self.ficha = ficha
+        self.posicion = 0
 
 def lanzar_dados():
     dado1 = random.randint(1, 6)
