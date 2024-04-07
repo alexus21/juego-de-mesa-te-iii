@@ -15,7 +15,7 @@ class Jugador:
     def __init__(self, ficha, numero):
         self.nombre = "Jugador " + str(numero)
         self.ficha = ficha
-        self.posicion = [0, 0]
+        self.posicion = 0
 
 
 def lanzar_dados():
@@ -117,7 +117,7 @@ def main():
         if avanzar_jugador(jugador_actual):
             comprobar_casilla(jugador_actual)
             # Si el jugador actual está en una casilla segura, no se aplica ninguna regla
-            if jugador_actual.posicion[jugador_actual] >= total_casillas:
+            if jugador_actual.posicion >= total_casillas:
                 print(f"\n¡{jugador_actual.nombre} ha ganado!")
                 # ESTO OBVIAMENTE SE VA APLICAR TODAS LAS REGLAS
                 return
