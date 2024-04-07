@@ -1,6 +1,6 @@
-# Juego de Mesa Increíble
+# Juego de Mesa
 
-¡Bienvenido al Juego de Mesa Increíble! Este juego fue creado por un equipo de tres personas y promete horas de diversión para toda la familia.
+¡Bienvenido al Juego de Mesa! Este juego fue creado por un equipo de tres personas y promete horas de diversión para toda la familia.
 
 ## Cómo Jugar
 
