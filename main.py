@@ -17,6 +17,7 @@ class Jugador:
         self.ficha = ficha
         self.posicion = 0
         self.contador_tiro_doble = 0
+        
 
 
 def lanzar_dados():
@@ -70,15 +71,27 @@ def comprobar_casilla(jugador):
 def imprimir_tablero(jugadores):
     print("\nTablero:")
     for i in range(total_casillas):  # tamaño del tablero
-        # recorremos los jugadores
-        for jugador in jugadores:
-            if jugador.posicion == i:  # se compara si algun jugador coincide con el indice del tablero
-                print(jugador.ficha, end='')  # si es asi imprime la ficha que es una por default
-                break  # para que no siga iterando e imprima mas fichas
+        # Buscamos si la casilla es una casilla segura
+        if i in casillas_seguras:
+            print('\033[1;42m' + f' [{i}] ' + '\033[0m', end='')
+        # Buscamos si la casilla es una casilla de penalización
+        elif i in casillas_penalizacion:
+            print('\033[1;41m' + f' [{i}] ' + '\033[0m', end='')
+        # Buscamos si la casilla es una casilla de tiro doble
+        elif i in casillas_tiro_doble:
+            print('\033[1;44m' + f' [{i}] ' + '\033[0m', end='')
+        # Buscamos si la casilla es un túnel seguro
+        elif i in tunel_seguro:
+            print('\033[1;45m' + f' [{i}] ' + '\033[0m', end='')
         else:
-            # si no hay nada imprime un guion o podria ser la psicion en si a mostrar queda a decision
+            # Si no hay nada, imprime un guión o la posición misma
             print(f' [{i}] ', end='')
+
+    # Imprimimos la posición de los jugadores
+    for jugador in jugadores:
+        print(jugador.ficha, end='')
     print()
+
 
 
 def get_numero_jugadores():
@@ -109,7 +122,8 @@ def main():
     num_jugadores = get_numero_jugadores()  # se llama la funcion get_numero_jugadores
 
     # lista de jugadores y la posicion de cada uno
-    jugadores = [Jugador(chr(65 + i), i + 1) for i in range(num_jugadores)]
+    jugadores = [Jugador(f"\033[1;37;4{i+1}m{chr(65 + i)}\033[0m", i + 1) for i in range(num_jugadores)]
+
 
     turno = 0
     while True:
