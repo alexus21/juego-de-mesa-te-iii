@@ -25,19 +25,26 @@ def lanzar_dados():
 
 
 def avanzar_jugador(jugador):
-    # se llama la funcion y se le asigna los datos de dado 1 y 2
-    dado1, dado2 = lanzar_dados()
 
-    print(f"{jugador.nombre} ha lanzado los dados: {dado1} y {dado2}")  # imprime el jugador y los dados
+    if jugador.posicion == 0:
+        dado1, dado2 = lanzar_dados()
 
-    if dado1 == dado2:  # comprobar si saco par
-        jugador.posicion += dado1 + dado2  # si es par avance en la posicion
-        print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprimo la posicion del jugador
-        comprobar_casilla(jugador)
-        return True  # avanza
+        print(f"{jugador.nombre} ha lanzado los dados: {dado1} y {dado2}")  # imprime el jugador y los dados
+
+        if dado1 == dado2:  # comprobar si saco par
+            jugador.posicion += dado1 + dado2  # si es par avance en la posicion
+            print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprino  la posicion del jugador
+            return True  # avanza
+        else:
+            print(f"{jugador.nombre} no saco par no puede avanzar")
+            return False  # no avanza
     else:
-        print(f"{jugador.nombre} no saco par no puede avanzar")
-        return False  # no avanza
+        dado1, dado2 = lanzar_dados()
+
+        print(f"{jugador.nombre} ha lanzado los dados: {dado1} y {dado2}")  # imprime el jugador y los dados
+        jugador.posicion += dado1 + dado2
+        print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprino  la posicion del jugador
+        return True
 
 
 def comprobar_casilla(jugador):
@@ -121,6 +128,8 @@ def main():
                 return
                 # llamo el tablero  despues que un jugador avanza
             imprimir_tablero(jugadores)
+            if jugador_actual.posicion > 0:
+                turno = (turno + 1) % num_jugadores
         else:
             # Si el jugador no avanza (no saca un par), pasa al siguiente jugador
             turno = (turno + 1) % num_jugadores
