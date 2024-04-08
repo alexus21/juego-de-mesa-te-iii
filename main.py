@@ -8,7 +8,7 @@ tunel_seguro = [70, 71, 72, 73, 74, 75]
 
 # Variables para manejar el dado
 min = 1
-max = 6
+max = 1
 
 
 class Jugador:
@@ -16,6 +16,7 @@ class Jugador:
         self.nombre = "Jugador " + str(numero)
         self.ficha = ficha
         self.posicion = 0
+        self.contador_tiro_doble = 0
 
 
 def lanzar_dados():
@@ -31,7 +32,8 @@ def avanzar_jugador(jugador):
 
     if dado1 == dado2:  # comprobar si saco par
         jugador.posicion += dado1 + dado2  # si es par avance en la posicion
-        print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprino  la posicion del jugador
+        print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprimo la posicion del jugador
+        comprobar_casilla(jugador)
         return True  # avanza
     else:
         print(f"{jugador.nombre} no saco par no puede avanzar")
@@ -39,26 +41,23 @@ def avanzar_jugador(jugador):
 
 
 def comprobar_casilla(jugador):
-    contador_tiro_doble = 0
+    jugador.contador_tiro_doble += 1
+    print(f"Tiros dobles: {jugador.contador_tiro_doble}")
 
     if jugador.posicion in casillas_seguras or jugador.posicion in tunel_seguro:
         print(f"El {jugador.nombre} está en una casilla segura.")
-        return
 
     if jugador.posicion in casillas_penalizacion:
         print(f"El {jugador.nombre} está en una casilla de penalización. Pierde 5 posiciones.")
         jugador.posicion -= 5
-        return
 
     if jugador.posicion in casillas_tiro_doble:
         print(f"El {jugador.nombre} está en una casilla con derecho a tiro doble.")
-        contador_tiro_doble += 1
-        if contador_tiro_doble == 3:
-            print(f"El {jugador.nombre} ha alcanzado el máximo de tiros dobles. Vuelve al inicio")
-            jugador.posicion = 0
-        return
+        jugador.contador_tiro_doble += 1
 
-    pass
+    if jugador.contador_tiro_doble == 3:
+        print(f"El {jugador.nombre} ha alcanzado el máximo de tiros dobles. Vuelve al inicio")
+        jugador.posicion = 0
 
 
 def imprimir_tablero(jugadores):
@@ -90,7 +89,7 @@ def get_numero_jugadores():
 
 
 def mostrar_reglas_del_juego():
-    with open("explicacion-juego.txt", "r") as reglas_juego:
+    with open("./explicacion-juego.txt", "r") as reglas_juego:
         contenido = reglas_juego.read()
         print(contenido)
         reglas_juego.close()
@@ -115,7 +114,6 @@ def main():
 
         # se llama la funcion avanzar jugador y se le pasa el jugador actual
         if avanzar_jugador(jugador_actual):
-            comprobar_casilla(jugador_actual)
             # Si el jugador actual está en una casilla segura, no se aplica ninguna regla
             if jugador_actual.posicion >= total_casillas:
                 print(f"\n¡{jugador_actual.nombre} ha ganado!")
@@ -126,6 +124,7 @@ def main():
         else:
             # Si el jugador no avanza (no saca un par), pasa al siguiente jugador
             turno = (turno + 1) % num_jugadores
+        print(f"Turno del jugador {jugadores[turno].nombre}")
 
 
 if __name__ == "__main__":
