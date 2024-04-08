@@ -117,7 +117,7 @@ class Parchis:
                 print(f"[{jugador_en_casilla}]", end=" ")
             else:
                 print(f"[{i:02d}]", end=" ")
-            if i % 20 == 0:  # Agregar salto de línea cada 20 casillas
+            if i % 10 == 0:  # Agregar salto de línea cada 10 casillas
                 print()
 
 
