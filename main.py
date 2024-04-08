@@ -71,27 +71,15 @@ def comprobar_casilla(jugador):
 def imprimir_tablero(jugadores):
     print("\nTablero:")
     for i in range(total_casillas):  # tamaño del tablero
-        # Buscamos si la casilla es una casilla segura
-        if i in casillas_seguras:
-            print('\033[1;42m' + f' [{i}] ' + '\033[0m', end='')
-        # Buscamos si la casilla es una casilla de penalización
-        elif i in casillas_penalizacion:
-            print('\033[1;41m' + f' [{i}] ' + '\033[0m', end='')
-        # Buscamos si la casilla es una casilla de tiro doble
-        elif i in casillas_tiro_doble:
-            print('\033[1;44m' + f' [{i}] ' + '\033[0m', end='')
-        # Buscamos si la casilla es un túnel seguro
-        elif i in tunel_seguro:
-            print('\033[1;45m' + f' [{i}] ' + '\033[0m', end='')
+        # recorremos los jugadores
+        for jugador in jugadores:
+            if jugador.posicion == i:  # se compara si algun jugador coincide con el indice del tablero
+                print(jugador.ficha, end='')  # si es asi imprime la ficha que es una por default
+                break  # para que no siga iterando e imprima mas fichas
         else:
-            # Si no hay nada, imprime un guión o la posición misma
+            # si no hay nada imprime un guion o podria ser la psicion en si a mostrar queda a decision
             print(f' [{i}] ', end='')
-
-    # Imprimimos la posición de los jugadores
-    for jugador in jugadores:
-        print(jugador.ficha, end='')
     print()
-
 
 
 def get_numero_jugadores():
