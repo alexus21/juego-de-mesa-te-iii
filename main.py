@@ -70,16 +70,20 @@ def comprobar_casilla(jugador):
 
 def imprimir_tablero(jugadores):
     print("\nTablero:")
-    for i in range(total_casillas):  # tamaño del tablero
-        # recorremos los jugadores
+    total_casillas = 80  # tamaño del tablero
+    ancho_casilla = 6  # ancho total de cada celda (incluyendo corchetes y espacios adicionales)
+    for i in range(1, total_casillas + 1):  # recorremos el tablero de 1 a total_casillas
+        jugador_en_casilla = None
         for jugador in jugadores:
-            if jugador.posicion == i:  # se compara si algun jugador coincide con el indice del tablero
-                print(jugador.ficha, end='')  # si es asi imprime la ficha que es una por default
-                break  # para que no siga iterando e imprima mas fichas
-        else:
-            # si no hay nada imprime un guion o podria ser la psicion en si a mostrar queda a decision
-            print(f' [{i}] ', end='')
-    print()
+            if jugador.posicion == i:  # se compara si algún jugador coincide con el índice del tablero
+                ficha_jugador = f' {jugador.ficha} '  # añadir espacios adicionales a la ficha del jugador
+                print(f'[→{ficha_jugador.center(ancho_casilla)}]', end='')  # imprime la ficha del jugador centrada en una celda de ancho fijo
+                jugador_en_casilla = True
+                break  # para que no siga iterando e imprima más fichas
+        if not jugador_en_casilla:
+            print(f'[{i:02d}]'.center(ancho_casilla), end='')  # si no hay jugador, imprime la posición centrada en una celda de ancho fijo
+        if i % 10 == 0:  # Agregar salto de línea cada 10 casillas
+            print()
 
 
 def get_numero_jugadores():
