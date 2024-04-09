@@ -68,22 +68,45 @@ def comprobar_casilla(jugador):
         jugador.posicion = 0
 
 
-def imprimir_tablero(jugadores):
+def imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casillas_tiro_doble, tunel_seguro):
     print("\nTablero:")
     total_casillas = 80  # tamaño del tablero
     ancho_casilla = 6  # ancho total de cada celda (incluyendo corchetes y espacios adicionales)
     for i in range(1, total_casillas + 1):  # recorremos el tablero de 1 a total_casillas
+        # Verificar el tipo de casilla
+        if i in casillas_seguras:
+            color_inicio = "\033[92m"  # color verde para casillas seguras
+            color_fin = "\033[0m"  # restablecer el color
+        elif i in casillas_penalizacion:
+            color_inicio = "\033[91m"  # color rojo para casillas de penalización
+            color_fin = "\033[0m"  # restablecer el color
+        elif i in casillas_tiro_doble:
+            color_inicio = "\033[93m"  # color amarillo para casillas de tiro doble
+            color_fin = "\033[0m"  # restablecer el color
+        elif i in tunel_seguro:
+            color_inicio = "\033[96m"  # color cyan para túneles seguros
+            color_fin = "\033[0m"  # restablecer el color
+        else:
+            color_inicio = ""  # no se cambia el color
+            color_fin = ""  # no se cambia el color
+
         jugador_en_casilla = None
         for jugador in jugadores:
             if jugador.posicion == i:  # se compara si algún jugador coincide con el índice del tablero
                 ficha_jugador = f' {jugador.ficha} '  # añadir espacios adicionales a la ficha del jugador
-                print(f'[→{ficha_jugador.center(ancho_casilla)}]', end='')  # imprime la ficha del jugador centrada en una celda de ancho fijo
+                print(f'[→{color_inicio}{ficha_jugador.center(ancho_casilla)}{color_fin}]', end='')  # imprime la ficha del jugador centrada en una celda de ancho fijo con color
                 jugador_en_casilla = True
                 break  # para que no siga iterando e imprima más fichas
         if not jugador_en_casilla:
-            print(f'[{i:02d}]'.center(ancho_casilla), end='')  # si no hay jugador, imprime la posición centrada en una celda de ancho fijo
+            casilla = f'[{i:02d}]'.center(ancho_casilla)  # si no hay jugador, imprime la posición centrada en una celda de ancho fijo
+            if i in casillas_seguras or i in casillas_penalizacion or i in casillas_tiro_doble or i in tunel_seguro:
+                casilla = color_inicio + casilla + color_fin  # aplicar color si es una casilla especial
+            print(casilla, end='')
         if i % 10 == 0:  # Agregar salto de línea cada 10 casillas
             print()
+
+
+
 
 
 def get_numero_jugadores():
@@ -133,7 +156,7 @@ def main():
                 # ESTO OBVIAMENTE SE VA APLICAR TODAS LAS REGLAS
                 return
                 # llamo el tablero  despues que un jugador avanza
-            imprimir_tablero(jugadores)
+            imprimir_tablero(jugadores,casillas_seguras, casillas_penalizacion, casillas_tiro_doble, tunel_seguro)
             if jugador_actual.posicion > 0:
                 turno = (turno + 1) % num_jugadores
         else:
