@@ -17,7 +17,7 @@ class Jugador:
         self.ficha = ficha
         self.posicion = 0
         self.contador_tiro_doble = 0
-        
+        self.derecho_tiro_doble = False
 
 
 def lanzar_dados():
@@ -26,7 +26,6 @@ def lanzar_dados():
 
 
 def avanzar_jugador(jugador):
-
     if jugador.posicion == 0:
         dado1, dado2 = lanzar_dados()
 
@@ -44,14 +43,22 @@ def avanzar_jugador(jugador):
 
         print(f"{jugador.nombre} ha lanzado los dados: {dado1} y {dado2}")  # imprime el jugador y los dados
         jugador.posicion += dado1 + dado2
-        print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprino  la posicion del jugador
+        print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprimo la posicion del jugador
+
+        if dado1 == dado2:
+            print(f"¡{jugador.nombre} ha sacado un par! Tiene derecho a un tiro doble.")
+            jugador.contador_tiro_doble += 1
+            jugador.derecho_tiro_doble = True
+
+        else:
+            jugador.contador_tiro_doble = 0
+            jugador.derecho_tiro_doble = False
+
+        comprobar_casilla(jugador)  # se llama la funcion comprobar casilla
         return True
 
 
 def comprobar_casilla(jugador):
-    jugador.contador_tiro_doble += 1
-    print(f"Tiros dobles: {jugador.contador_tiro_doble}")
-
     if jugador.posicion in casillas_seguras or jugador.posicion in tunel_seguro:
         print(f"El {jugador.nombre} está en una casilla segura.")
 
@@ -63,14 +70,15 @@ def comprobar_casilla(jugador):
         print(f"El {jugador.nombre} está en una casilla con derecho a tiro doble.")
         jugador.contador_tiro_doble += 1
 
-    if jugador.contador_tiro_doble == 3:
+    if jugador.contador_tiro_doble == 3 and jugador.derecho_tiro_doble:
         print(f"El {jugador.nombre} ha alcanzado el máximo de tiros dobles. Vuelve al inicio")
         jugador.posicion = 0
+        jugador.contador_tiro_doble = 0
+        jugador.derecho_tiro_doble = False
 
 
 def imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casillas_tiro_doble, tunel_seguro):
     print("\nTablero:")
-    total_casillas = 80  # tamaño del tablero
     ancho_casilla = 6  # ancho total de cada celda (incluyendo corchetes y espacios adicionales)
     for i in range(1, total_casillas + 1):  # recorremos el tablero de 1 a total_casillas
         # Verificar el tipo de casilla
@@ -94,19 +102,18 @@ def imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casilla
         for jugador in jugadores:
             if jugador.posicion == i:  # se compara si algún jugador coincide con el índice del tablero
                 ficha_jugador = f' {jugador.ficha} '  # añadir espacios adicionales a la ficha del jugador
-                print(f'[→{color_inicio}{ficha_jugador.center(ancho_casilla)}{color_fin}]', end='')  # imprime la ficha del jugador centrada en una celda de ancho fijo con color
+                print(f'[→{color_inicio}{ficha_jugador.center(ancho_casilla)}{color_fin}]',
+                      end='')  # imprime la ficha del jugador centrada en una celda de ancho fijo con color
                 jugador_en_casilla = True
                 break  # para que no siga iterando e imprima más fichas
         if not jugador_en_casilla:
-            casilla = f'[{i:02d}]'.center(ancho_casilla)  # si no hay jugador, imprime la posición centrada en una celda de ancho fijo
+            casilla = f'[{i:02d}]'.center(
+                ancho_casilla)  # si no hay jugador, imprime la posición centrada en una celda de ancho fijo
             if i in casillas_seguras or i in casillas_penalizacion or i in casillas_tiro_doble or i in tunel_seguro:
                 casilla = color_inicio + casilla + color_fin  # aplicar color si es una casilla especial
             print(casilla, end='')
         if i % 10 == 0:  # Agregar salto de línea cada 10 casillas
             print()
-
-
-
 
 
 def get_numero_jugadores():
@@ -137,8 +144,7 @@ def main():
     num_jugadores = get_numero_jugadores()  # se llama la funcion get_numero_jugadores
 
     # lista de jugadores y la posicion de cada uno
-    jugadores = [Jugador(f"\033[1;37;4{i+1}m{chr(65 + i)}\033[0m", i + 1) for i in range(num_jugadores)]
-
+    jugadores = [Jugador(f"\033[1;37;4{i + 1}m{chr(65 + i)}\033[0m", i + 1) for i in range(num_jugadores)]
 
     turno = 0
     while True:
@@ -156,13 +162,34 @@ def main():
                 # ESTO OBVIAMENTE SE VA APLICAR TODAS LAS REGLAS
                 return
                 # llamo el tablero  despues que un jugador avanza
-            imprimir_tablero(jugadores,casillas_seguras, casillas_penalizacion, casillas_tiro_doble, tunel_seguro)
+            imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casillas_tiro_doble, tunel_seguro)
             if jugador_actual.posicion > 0:
                 turno = (turno + 1) % num_jugadores
+
+            if jugador_actual.derecho_tiro_doble:
+                # El jugador ya tiene derecho a un tiro doble
+                while jugador_actual.derecho_tiro_doble:  # Permitir múltiples tiros dobles si se siguen obteniendo
+                    # Esperar que el jugador presione una tecla para lanzar los dados
+                    input(f"\n{jugador_actual.nombre}, presiona Enter para lanzar los dados nuevamente.")
+
+                    # Realizar el segundo lanzamiento
+                    if avanzar_jugador(jugador_actual):
+                        imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casillas_tiro_doble,
+                                         tunel_seguro)
+                    else:
+                        print("El jugador no avanza después del tiro doble.")
+                        break  # Si el jugador no avanza, no se le permite otro tiro doble
+
+                    # Verificar si el jugador obtuvo otro tiro doble
+                    if jugador_actual.derecho_tiro_doble:
+                        # Si sí, permitir que el mismo jugador lance nuevamente
+                        continue
+                    else:
+                        # Si no, cambiar al siguiente jugador
+                        turno = (turno + 1) % num_jugadores
         else:
-            # Si el jugador no avanza (no saca un par), pasa al siguiente jugador
+            # Si el jugador no tiene derecho a un tiro doble, cambiar al siguiente jugador
             turno = (turno + 1) % num_jugadores
-        print(f"Turno del jugador {jugadores[turno].nombre}")
 
 
 if __name__ == "__main__":
