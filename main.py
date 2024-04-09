@@ -27,7 +27,7 @@ def lanzar_dados():
 
 
 def avanzar_jugador(jugador):
-    if jugador.posicion == 0: #verificamos si su posicion inicial es 0
+    if jugador.posicion == 0:
         dado1, dado2 = lanzar_dados()
 
         print(f"{jugador.nombre} ha lanzado los dados: {dado1} y {dado2}")  # imprime el jugador y los dados
