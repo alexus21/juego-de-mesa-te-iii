@@ -26,7 +26,7 @@ def lanzar_dados():
 
 
 def avanzar_jugador(jugador):
-    if jugador.posicion == 0:
+    if jugador.posicion == 0: #verificamos si su posicion inicial es 0
         dado1, dado2 = lanzar_dados()
 
         print(f"{jugador.nombre} ha lanzado los dados: {dado1} y {dado2}")  # imprime el jugador y los dados
@@ -78,7 +78,14 @@ def comprobar_casilla(jugador):
 
 
 def imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casillas_tiro_doble, tunel_seguro):
-    print("\nTablero:")
+    print("\n→→→→→→→→→→→→→→→→→→→→→→→→→  TABLERO  ←←←←←←←←←←←←←←←←←←←←←←←←")
+    print("\n")
+    print("\033[92mCASILLA SEGURA\033[0m")
+    print("\033[91mCASILLA DE PENALIZACION\033[0m")
+    print("\033[93mCASILLA DE TIRO DOBLE\033[0m")
+    print("\033[96mTUNEL SEGURO\033[0m")
+    print("\n")
+
     ancho_casilla = 6  # ancho total de cada celda (incluyendo corchetes y espacios adicionales)
     for i in range(1, total_casillas + 1):  # recorremos el tablero de 1 a total_casillas
         # Verificar el tipo de casilla
