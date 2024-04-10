@@ -26,7 +26,7 @@ def lanzar_dados():
     return r(min, max), r(min, max)
 
 
-def avanzar_jugador(jugador):
+def avanzar_jugador(jugador, jugadores):  # Agregado el parámetro 'jugadores' aquí
     if jugador.posicion == 0:
         dado1, dado2 = lanzar_dados()
 
@@ -59,16 +59,17 @@ def avanzar_jugador(jugador):
             jugador.derecho_tiro_doble = False
             jugador.contador_tiro_doble = 0
 
-        comprobar_casilla(jugador)  # se llama la funcion comprobar casilla
+        comprobar_casilla(jugador, jugadores)  # se llama la funcion comprobar casilla
         return True
 
 
-def comprobar_casilla(jugador):
+
+def comprobar_casilla(jugador, jugadores):
     if jugador.victoria is False:
+        # La casilla segura no aplica la sanción de tiro doble (volver al inicio,
+         # solo afecta a la cantidad de tiros dobles si esta es mayor o igual a 3)
         if jugador.posicion in casillas_seguras or jugador.posicion in tunel_seguro:
             print(f"El {jugador.nombre} está en una casilla segura.")
-            # La casilla segura no aplica la sanción de tiro doble (volver al inicio,
-            # solo afecta a la cantidad de tiros dobles si esta es mayor o igual a 3)
             if jugador.contador_tiro_doble >= 3:
                 jugador.contador_tiro_doble = 0
                 jugador.derecho_tiro_doble = False
@@ -83,6 +84,16 @@ def comprobar_casilla(jugador):
             jugador.contador_tiro_doble += 1
             jugador.derecho_tiro_doble = True
             return
+
+        for comer_jugador in jugadores:
+            if comer_jugador != jugador and comer_jugador.posicion == jugador.posicion:
+                print(f"El {comer_jugador.nombre} ya está en la misma posición. El {jugador.nombre} regresa al inicio.")
+                jugador.posicion = 0
+                jugador.contador_tiro_doble = 0
+                jugador.derecho_tiro_doble = False
+                comer_jugador.posicion += 5  
+                print(f"¡El {comer_jugador.nombre} ha ganado 5 posiciones por comer la ficha de {jugador.nombre} !")
+                return
 
         if jugador.contador_tiro_doble >= 3 and jugador.derecho_tiro_doble:
             print(f"El {jugador.nombre} ha alcanzado el máximo de tiros dobles. Vuelve al inicio")
@@ -177,10 +188,11 @@ def main():
         input(f"\n{jugador_actual.nombre}, presiona Enter para lanzar los dados.")
 
         # se llama la funcion avanzar jugador y se le pasa el jugador actual
-        if avanzar_jugador(jugador_actual):
+        if avanzar_jugador(jugador_actual,jugadores):
             # Si el jugador actual está en una casilla segura, no se aplica ninguna regla
             if jugador_actual.posicion >= total_casillas:
                 print(f"\n¡{jugador_actual.nombre} ha ganado!")
+                print("\n→→→→→→→→→→→→→→→→→→→→→JUEGO TERMINADO←←←←←←←←←←←←←←←←←←←←")
                 imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casillas_tiro_doble, tunel_seguro)
                 break  # Salir del bucle si un jugador ha ganado
 
@@ -193,13 +205,14 @@ def main():
                 # El jugador ya tiene derecho a un tiro doble
                 # Permitir múltiples tiros dobles si se siguen obteniendo
                 while jugador_actual.derecho_tiro_doble:
-                    # Esperar que el jugador presione una tecla para lanzar los dados
+                    # Esperar que el jugador presione una tecla para lanzar los dados nuevamente
                     input(f"\n{jugador_actual.nombre}, presiona Enter para lanzar los dados nuevamente.")
 
                     # Realizar el segundo lanzamiento
-                    if avanzar_jugador(jugador_actual):
+                    if avanzar_jugador(jugador_actual,jugadores):
                         imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casillas_tiro_doble,
                                          tunel_seguro)
+                        print("JUEGO TERMINADO")
 
                     # Verificar si el jugador obtuvo otro tiro doble
                     if jugador_actual.derecho_tiro_doble:
@@ -214,4 +227,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()  # llamo solamente a la funcion main
+    main()  # llamo solamente a la funcion main arreglalo como paso ese otro parametro donde aveces lo llamo en otro lado no funciona
