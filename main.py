@@ -8,7 +8,7 @@ tunel_seguro = [70, 71, 72, 73, 74, 75]
 
 # Variables para manejar el dado
 min = 1
-max = 2
+max = 6
 
 
 class Jugador:
