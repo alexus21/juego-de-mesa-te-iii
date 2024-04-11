@@ -10,6 +10,11 @@ tunel_seguro = [70, 71, 72, 73, 74, 75]
 min = 1
 max = 6
 
+# Variables de penalizacion y puntos del juego:
+penalizacion_casilla_penalizacion = 5
+posiciones_ficha_comida = 10
+maximo_tiros_dobles = 3
+
 
 class Jugador:
     def __init__(self, ficha, numero):
@@ -34,11 +39,13 @@ def avanzar_jugador(jugador, jugadores):  # Agregado el parámetro 'jugadores' a
 
         if dado1 == dado2:  # comprobar si saco par
             jugador.posicion += dado1 + dado2  # si es par avance en la posicion
-            print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprino  la posicion del jugador
+            print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprimo la posicion del jugador
+            comprobar_casilla(jugador, jugadores)  # se llama la funcion comprobar casilla
             return True  # avanza
         else:
             print(f"{jugador.nombre} no saco par no puede avanzar")
             return False  # no avanza
+
     else:
         dado1, dado2 = lanzar_dados()
 
@@ -63,21 +70,21 @@ def avanzar_jugador(jugador, jugadores):  # Agregado el parámetro 'jugadores' a
         return True
 
 
-
 def comprobar_casilla(jugador, jugadores):
     if jugador.victoria is False:
         # La casilla segura no aplica la sanción de tiro doble (volver al inicio,
-         # solo afecta a la cantidad de tiros dobles si esta es mayor o igual a 3)
+        # solo afecta a la cantidad de tiros dobles si esta es mayor o igual a 3)
         if jugador.posicion in casillas_seguras or jugador.posicion in tunel_seguro:
             print(f"El {jugador.nombre} está en una casilla segura.")
-            if jugador.contador_tiro_doble >= 3:
+            if jugador.contador_tiro_doble >= maximo_tiros_dobles:
                 jugador.contador_tiro_doble = 0
                 jugador.derecho_tiro_doble = False
             return
 
         if jugador.posicion in casillas_penalizacion:
-            print(f"El {jugador.nombre} está en una casilla de penalización. Pierde 5 posiciones.")
-            jugador.posicion -= 5
+            print(
+                f"El {jugador.nombre} está en una casilla de penalización. Pierde {penalizacion_casilla_penalizacion} posiciones.")
+            jugador.posicion -= penalizacion_casilla_penalizacion
 
         if jugador.posicion in casillas_tiro_doble:
             print(f"El {jugador.nombre} está en una casilla con derecho a tiro doble.")
@@ -87,15 +94,22 @@ def comprobar_casilla(jugador, jugadores):
 
         for comer_jugador in jugadores:
             if comer_jugador != jugador and comer_jugador.posicion == jugador.posicion:
-                print(f"El {comer_jugador.nombre} ya está en la misma posición. El {jugador.nombre} regresa al inicio.")
-                jugador.posicion = 0
+                print(f"El {jugador.nombre} ha alcanzado a {comer_jugador.nombre}. ¡Se come la ficha de {comer_jugador.nombre}! y avanza {posiciones_ficha_comida} posiciones.")
+                jugador.posicion += posiciones_ficha_comida
                 jugador.contador_tiro_doble = 0
                 jugador.derecho_tiro_doble = False
-                comer_jugador.posicion += 5  
-                print(f"¡El {comer_jugador.nombre} ha ganado 5 posiciones por comer la ficha de {jugador.nombre} !")
+                if comer_jugador.posicion < 10:
+                    print(
+                        f"El {comer_jugador.nombre} vuelve al inicio.")
+                    comer_jugador.posicion = 0
+                else:
+                    print(
+                        f"El {comer_jugador.nombre} pierde {posiciones_ficha_comida} posiciones.")
+                    comer_jugador.posicion -= posiciones_ficha_comida
+                # print( f"¡El {jugador.nombre} ha ganado {posiciones_ficha_comida} posiciones por comer la ficha de {jugador.nombre} !")
                 return
 
-        if jugador.contador_tiro_doble >= 3 and jugador.derecho_tiro_doble:
+        if jugador.contador_tiro_doble >= maximo_tiros_dobles and jugador.derecho_tiro_doble:
             print(f"El {jugador.nombre} ha alcanzado el máximo de tiros dobles. Vuelve al inicio")
             jugador.posicion = 0
             jugador.contador_tiro_doble = 0
@@ -184,11 +198,11 @@ def main():
         jugador_actual = jugadores[turno]
 
         # espera que se presione una tecla para que se lanze los dados
-        print("*" * 50)
+        print("*" * 75)
         input(f"\n{jugador_actual.nombre}, presiona Enter para lanzar los dados.")
 
         # se llama la funcion avanzar jugador y se le pasa el jugador actual
-        if avanzar_jugador(jugador_actual,jugadores):
+        if avanzar_jugador(jugador_actual, jugadores):
             # Si el jugador actual está en una casilla segura, no se aplica ninguna regla
             if jugador_actual.posicion >= total_casillas:
                 print(f"\n¡{jugador_actual.nombre} ha ganado!")
@@ -209,10 +223,10 @@ def main():
                     input(f"\n{jugador_actual.nombre}, presiona Enter para lanzar los dados nuevamente.")
 
                     # Realizar el segundo lanzamiento
-                    if avanzar_jugador(jugador_actual,jugadores):
+                    if avanzar_jugador(jugador_actual, jugadores):
                         imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casillas_tiro_doble,
                                          tunel_seguro)
-                        print("JUEGO TERMINADO")
+                        print("\n→→→→→→→→→→→→→→→→→→→→→TURNO TERMINADO←←←←←←←←←←←←←←←←←←←←")
 
                     # Verificar si el jugador obtuvo otro tiro doble
                     if jugador_actual.derecho_tiro_doble:
