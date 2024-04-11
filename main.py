@@ -92,10 +92,15 @@ def comprobar_casilla(jugador, jugadores):
             jugador.posicion -= penalizacion_casilla_penalizacion
 
         if jugador.posicion in casillas_tiro_doble:
-            print(f"El {jugador.nombre} está en una casilla con derecho a tiro doble.")
-            jugador.contador_tiro_doble += 1
-            jugador.derecho_tiro_doble = True
-            return
+
+            if jugador.posicion>=80:
+                print()
+   
+            else:
+                print(f"El {jugador.nombre} está en una casilla con derecho a tiro doble.")
+                jugador.contador_tiro_doble += 1
+                jugador.derecho_tiro_doble = True
+                return
 
         for comer_jugador in jugadores:
             if comer_jugador != jugador and comer_jugador.posicion == jugador.posicion:
