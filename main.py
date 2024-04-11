@@ -56,10 +56,15 @@ def avanzar_jugador(jugador, jugadores):  # Agregado el parámetro 'jugadores' a
             jugador.victoria = True
         print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprimo la posicion del jugador
 
+        
+
         if dado1 == dado2:
-            print(f"¡{jugador.nombre} ha sacado un par! Tiene derecho a un tiro doble.")
-            jugador.contador_tiro_doble += 1
-            jugador.derecho_tiro_doble = True
+            if jugador.posicion>=80:
+                print()
+            else:    
+                print(f"¡{jugador.nombre} ha sacado un par! Tiene derecho a un tiro doble.")
+                jugador.contador_tiro_doble += 1
+                jugador.derecho_tiro_doble = True
 
         else:
             # print(f"{jugador.nombre} no ha sacado un par, pierde el derecho a tirar nuevamente.")
