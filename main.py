@@ -35,7 +35,10 @@ def avanzar_jugador(jugador, jugadores): #funcion jugadores que recibe dos param
     if jugador.posicion == 0:
         dado1, dado2 = lanzar_dados()
 
-        print(f"{jugador.nombre} ha lanzado los dados: {dado1} y {dado2}")  # imprime el jugador y los dados
+        borde =  "╔" + "═" * 40 + "╗\n"  # Borde superior
+        borde += "║" + f"{jugador.nombre} ha lanzado los dados: {dado1} y {dado2:2}" + " " * 2 + "║\n" 
+        borde += "╚" + "═" * 40 + "╝"  # Borde inferior
+        print(borde)
 
         if dado1 == dado2:  # comprobar si saco par
             jugador.posicion += dado1 + dado2  # si es par avance en la posicion
@@ -211,7 +214,7 @@ def main():
         jugador_actual = jugadores[turno]
 
         # espera que se presione una tecla para que se lanze los dados
-        print("*" * 75)
+        
         input(f"\n{jugador_actual.nombre}, presiona Enter para lanzar los dados.")
 
         # se llama la funcion avanzar jugador y se le pasa el jugador actual
