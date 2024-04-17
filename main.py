@@ -1,8 +1,8 @@
-from random import randint as r #importamos la libreria random
+from random import randint as r  # importamos la libreria random
 
 total_casillas = 80
 casillas_seguras = [10, 12, 28, 32, 40, 60, 69]
-casillas_penalizacion = [20, 41, 55, 63, 76]        #arreglos que almacenan las casillas de todo el tablero
+casillas_penalizacion = [20, 41, 55, 63, 76]  # arreglos que almacenan las casillas de todo el tablero
 casillas_tiro_doble = [7, 35, 61]
 tunel_seguro = [70, 71, 72, 73, 74, 75]
 
@@ -16,7 +16,7 @@ posiciones_ficha_comida = 10
 maximo_tiros_dobles = 3
 
 
-class Jugador:             #clase jugador donde se maneja el nombre y otros atributos
+class Jugador:  # clase jugador donde se maneja el nombre y otros atributos
     def __init__(self, ficha, numero):
         self.nombre = "Jugador " + str(numero)
         self.ficha = ficha
@@ -31,7 +31,7 @@ def lanzar_dados():
     return r(min, max), r(min, max)
 
 
-def avanzar_jugador(jugador, jugadores): #funcion jugadores que recibe dos parametros
+def avanzar_jugador(jugador, jugadores):  # funcion jugadores que recibe dos parametros
     if jugador.posicion == 0:
         dado1, dado2 = lanzar_dados()
 
@@ -40,7 +40,8 @@ def avanzar_jugador(jugador, jugadores): #funcion jugadores que recibe dos param
         if dado1 == dado2:  # comprobar si saco par
             jugador.posicion += dado1 + dado2  # si es par avance en la posicion
             print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprimo la posicion del jugador
-            comprobar_casilla(jugador, jugadores)  # se llama la funcion comprobar si callo en alguna casilla de penalizacion
+            comprobar_casilla(jugador,
+                              jugadores)  # se llama la funcion comprobar si callo en alguna casilla de penalizacion
             return True  # avanza
         else:
             print(f"{jugador.nombre} no saco par no puede avanzar")
@@ -56,12 +57,10 @@ def avanzar_jugador(jugador, jugadores): #funcion jugadores que recibe dos param
             jugador.victoria = True
         print(f"{jugador.nombre} avanza a la posición {jugador.posicion}")  # imprimo la posicion del jugador
 
-        
-
         if dado1 == dado2:
-            if jugador.posicion>=80:
+            if jugador.posicion >= 80:
                 print()
-            else:    
+            else:
                 print(f"¡{jugador.nombre} ha sacado un par! Tiene derecho a un tiro doble.")
                 jugador.contador_tiro_doble += 1
                 jugador.derecho_tiro_doble = True
@@ -86,34 +85,36 @@ def comprobar_casilla(jugador, jugadores):
                 jugador.derecho_tiro_doble = False
             return
 
-        if jugador.posicion in casillas_penalizacion: #se verifica la posicion del jugador en las casillas de penalizacion
+        if jugador.posicion in casillas_penalizacion:  # se verifica la posicion del jugador en las casillas de penalizacion
             print(
-                f"El {jugador.nombre} está en una casilla de penalización. Pierde {penalizacion_casilla_penalizacion} posiciones.") 
-            jugador.posicion -= penalizacion_casilla_penalizacion #si cae en una se le descuenta a la posicion del jugador
+                f"El {jugador.nombre} está en una casilla de penalización. Pierde {penalizacion_casilla_penalizacion} posiciones.")
+            jugador.posicion -= penalizacion_casilla_penalizacion  # si cae en una se le descuenta a la posicion del jugador
 
-        if jugador.posicion in casillas_tiro_doble: #se verifica si cae en tiro doble
+        if jugador.posicion in casillas_tiro_doble:  # se verifica si cae en tiro doble
 
-            if jugador.posicion>=80:
+            if jugador.posicion >= 80:
                 print()
-   
+
             else:
-                print(f"El {jugador.nombre} está en una casilla con derecho a tiro doble.") #si cae en tiro doble el contador aumenta en 1 y se le pasa el derecho a tirar en true
+                print(
+                    f"El {jugador.nombre} está en una casilla con derecho a tiro doble.")  # si cae en tiro doble el contador aumenta en 1 y se le pasa el derecho a tirar en true
                 jugador.contador_tiro_doble += 1
                 jugador.derecho_tiro_doble = True
                 return
 
-        for comer_jugador in jugadores:# Iteramos sobre cada jugador en la lista de jugadores
-            if comer_jugador != jugador and comer_jugador.posicion == jugador.posicion:# Verificamos si el jugador actual no es el mismo que 'comer_jugador'
-                                                                                                                 # y si ambos están en la misma posición
-                print(f"El {jugador.nombre} ha alcanzado a {comer_jugador.nombre}. ¡Se come la ficha de {comer_jugador.nombre}! y avanza {posiciones_ficha_comida} posiciones.")
+        for comer_jugador in jugadores:  # Iteramos sobre cada jugador en la lista de jugadores
+            if comer_jugador != jugador and comer_jugador.posicion == jugador.posicion:  # Verificamos si el jugador actual no es el mismo que 'comer_jugador'
+                # y si ambos están en la misma posición
+                print(
+                    f"El {jugador.nombre} ha alcanzado a {comer_jugador.nombre}. ¡Se come la ficha de {comer_jugador.nombre}! y avanza {posiciones_ficha_comida} posiciones.")
                 # Imprimimos un mensaje indicando que el jugador actual ha alcanzado a otro jugador, y avanza ciertas posiciones indicadas
-                jugador.posicion += posiciones_ficha_comida #le sumamos la posicion 
-                jugador.contador_tiro_doble = 0 #reiniciamos el contador
+                jugador.posicion += posiciones_ficha_comida  # le sumamos la posicion
+                jugador.contador_tiro_doble = 0  # reiniciamos el contador
                 jugador.derecho_tiro_doble = False
-                if comer_jugador.posicion < 10: # Si la posición del jugador comido es mayor a 10, significa que ha avanzado lo suficiente en el juego como para retroceder un número específico de posiciones
+                if comer_jugador.posicion < 10:  # Si la posición del jugador comido es mayor a 10, significa que ha avanzado lo suficiente en el juego como para retroceder un número específico de posiciones
                     print(
-                        f"El {comer_jugador.nombre} vuelve al inicio.") #lo manda al inicio
-                    comer_jugador.posicion = 0 #reinicia su posicion
+                        f"El {comer_jugador.nombre} vuelve al inicio.")  # lo manda al inicio
+                    comer_jugador.posicion = 0  # reinicia su posicion
                 else:
                     print(
                         f"El {comer_jugador.nombre} pierde {posiciones_ficha_comida} posiciones.")
@@ -121,11 +122,12 @@ def comprobar_casilla(jugador, jugadores):
                 # print( f"¡El {jugador.nombre} ha ganado {posiciones_ficha_comida} posiciones por comer la ficha de {jugador.nombre} !")
                 return
 
-        if jugador.contador_tiro_doble >= maximo_tiros_dobles and jugador.derecho_tiro_doble:# Verificamos si el contador de tiros dobles del jugador actual es igual o mayor que
-        # el máximo permitido y si tiene derecho a tirar doble
-            print(f"El {jugador.nombre} ha alcanzado el máximo de tiros dobles. Vuelve al inicio") #si alcanzo el limite le mostramos el  mensaje 
-            jugador.posicion = 0 #lo mandamos al inicio 
-            jugador.contador_tiro_doble = 0 #reiniciamos contador
+        if jugador.contador_tiro_doble >= maximo_tiros_dobles and jugador.derecho_tiro_doble:  # Verificamos si el contador de tiros dobles del jugador actual es igual o mayor que
+            # el máximo permitido y si tiene derecho a tirar doble
+            print(
+                f"El {jugador.nombre} ha alcanzado el máximo de tiros dobles. Vuelve al inicio")  # si alcanzo el limite le mostramos el  mensaje
+            jugador.posicion = 0  # lo mandamos al inicio
+            jugador.contador_tiro_doble = 0  # reiniciamos contador
             jugador.derecho_tiro_doble = False
 
 
@@ -133,7 +135,8 @@ def imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casilla
     print("\n→→→→→→→→→→→→→→→→→→→→→→→→→  TABLERO  ←←←←←←←←←←←←←←←←←←←←←←←←")
     print("\n")
     print("\033[92mCASILLA SEGURA\033[0m")
-    print("\033[91mCASILLA DE PENALIZACION\033[0m")   #definimos la funcion tablero y le pasamos los jugadores y todas las casillas del tablero
+    print(
+        "\033[91mCASILLA DE PENALIZACION\033[0m")  # definimos la funcion tablero y le pasamos los jugadores y todas las casillas del tablero
     print("\033[93mCASILLA DE TIRO DOBLE\033[0m")
     print("\033[96mTUNEL SEGURO\033[0m")
     print("\n")
@@ -157,7 +160,7 @@ def imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casilla
             color_inicio = ""  # no se cambia el color
             color_fin = ""  # no se cambia el color
 
-        jugador_en_casilla = None  #variable para verificar si hay alguien en el tablero
+        jugador_en_casilla = None  # variable para verificar si hay alguien en el tablero
         for jugador in jugadores:
             if jugador.posicion == i:  # se compara si algún jugador coincide con el índice del tablero
                 ficha_jugador = f' {jugador.ficha} '  # añadir espacios adicionales a la ficha del jugador
@@ -171,7 +174,7 @@ def imprimir_tablero(jugadores, casillas_seguras, casillas_penalizacion, casilla
             if i in casillas_seguras or i in casillas_penalizacion or i in casillas_tiro_doble or i in tunel_seguro:
                 casilla = color_inicio + casilla + color_fin  # aplica un color si es una casilla especial
             print(casilla, end='')
-        if i % 10 == 0:  #salto de línea cada 10 casillas
+        if i % 10 == 0:  # salto de línea cada 10 casillas
             print()
 
 
@@ -190,14 +193,14 @@ def get_numero_jugadores():
 
 
 def mostrar_reglas_del_juego():
-    with open("./explicacion-juego.txt", "r") as reglas_juego: #muestra las reglas del juegoi
+    with open("./explicacion-juego.txt", "r") as reglas_juego:  # muestra las reglas del juegoi
         contenido = reglas_juego.read()
         print(contenido)
         reglas_juego.close()
 
 
 def main():
-    mostrar_reglas_del_juego() #mostramos las reglas
+    mostrar_reglas_del_juego()  # mostramos las reglas
     input("\n\nPresione enter para iniciar...")
 
     num_jugadores = get_numero_jugadores()  # se llama la funcion get_numero_jugadores
@@ -254,4 +257,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()  # llamo solamente a la funcion main 
+    main()  # llamo solamente a la funcion main
